@@ -1,0 +1,41 @@
+
+INSERT INTO dbo.Studenci
+    (ID, Imie, Nazwisko, WynikTestu)
+VALUES
+    (1, 'Anna', 'Kowalska', 95),
+    (2, 'Jan', 'Nowak', 87),
+    (3, 'Ewa', 'Wiśniewska', 95),
+    (4, 'Piotr', 'Zając', 78),
+    (5, 'Tomasz', 'Lewandowski', 87),
+    (6, 'Karolina', 'Mazur', 92),
+    (7, 'Marek', 'Wójcik', 95),
+    (8, 'Paweł', 'Dąbrowski', 70);
+
+SELECT top 3
+    Imie, Nazwisko, WynikTestu,
+    RANK() OVER (ORDER BY WynikTestu DESC) AS Rank_Wynik,
+    DENSE_RANK() OVER (ORDER BY WynikTestu DESC) AS Dense_Rank_Wynik,
+    ROW_NUMBER() OVER (ORDER BY WynikTestu DESC) AS Row_Number_Wynik
+FROM Studenci;
+
+ALTER TABLE Studenci ADD DataUrodzenia DATE;
+
+SELECT *
+from Studenci
+
+ALTER TABLE Studenci ALTER COLUMN WynikTestu VARCHAR(10);
+SELECT COLUMN_NAME, DATA_TYPE
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'Studenci';
+
+UPDATE Studenci SET WynikTestu = 50 WHERE ID = 2;
+
+DELETE FROM Studenci WHERE ID = 6;
+
+CREATE LOGIN NowyUzytkownik WITH PASSWORD = 'BezpieczneHaslo';
+CREATE USER NowyUzytkownik FOR LOGIN NowyUzytkownik;
+GRANT SELECT ON Studenci TO NowyUzytkownik;
+
+REVOKE DELETE ON Studenci TO NowyUzytkownik;
+
+create DATABASE HMS 
