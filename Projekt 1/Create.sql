@@ -86,29 +86,7 @@ CREATE TABLE [MedicalStaff]
 );
 
 -- Tabele Pośrednie
-/* CREATE TABLE [Prescriptions_Medications]
-(
-    [PrescriptionsId] INT,
-    [MedicationsId] INT,
-    FOREIGN KEY ([PrescriptionsId]) REFERENCES [Prescriptions]([Id]),
-    FOREIGN KEY ([MedicationsId]) REFERENCES [Medications]([Id]),
-); */
-/* CREATE TABLE [Doctors_Appointments]
-(
-    [Id] INT IDENTITY (1, 1) NOT NULL PRIMARY KEY,
-    [DoctorsId] INT NOT NULL,
-    [AppointmentsId] INT NOT NULL,
-    FOREIGN KEY ([DoctorsId]) REFERENCES [Doctors]([Id]),
-    FOREIGN KEY ([AppointmentsId]) REFERENCES [Appointments]([Id]),
-) */
-/* CREATE TABLE [Patients_Appointments]
-(
-    [Id] INT IDENTITY (1, 1) NOT NULL PRIMARY KEY,
-    [PatientsId] INT NOT NULL,
-    [AppointmentsId] INT NOT NULL,
-    FOREIGN KEY ([PatientsId]) REFERENCES [Patients]([Id]),
-    FOREIGN KEY ([AppointmentsId]) REFERENCES [Appointments]([Id]),
-) */
+
 CREATE TABLE [Patients_Prescriptions]
 (
     [Id] INT IDENTITY (1, 1) NOT NULL PRIMARY KEY,
@@ -117,19 +95,3 @@ CREATE TABLE [Patients_Prescriptions]
     FOREIGN KEY ([PatientsId]) REFERENCES [Patients]([Id]),
     FOREIGN KEY ([AppointmentsId]) REFERENCES [Appointments]([Id]),
 )
-/* CREATE TABLE [Appointments_LabTest]
-(
-    [Id] INT IDENTITY (1, 1) NOT NULL PRIMARY KEY,
-    [AppointmentsId] INT NOT NULL,
-    [LabTestID] INT NOT NULL,
-    FOREIGN KEY ([AppointmentsId]) REFERENCES [Appointments]([Id]),
-    FOREIGN KEY ([LabTestID]) REFERENCES [LabTest]([Id]),
-) */
-/* CREATE TABLE [Patients_Medications]
-(
-    [Id] INT IDENTITY (1, 1) NOT NULL PRIMARY KEY,
-    [PatientsId] INT NOT NULL,
-    [LekId] INT NOT NULL,
-    FOREIGN KEY ([PatientsId]) REFERENCES [Patients]([Id]),
-    FOREIGN KEY ([LekId]) REFERENCES [Medications]([Id]),
-) */
