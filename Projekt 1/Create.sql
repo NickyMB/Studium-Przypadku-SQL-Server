@@ -1,3 +1,4 @@
+
 CREATE DATABASE HMS;
 
 Use HMS;
@@ -86,12 +87,3 @@ CREATE TABLE [MedicalStaff]
 );
 
 -- Tabele Pośrednie
-
-CREATE TABLE [Patients_Prescriptions]
-(
-    [Id] INT IDENTITY (1, 1) NOT NULL PRIMARY KEY,
-    [PatientsId] INT NOT NULL,
-    [AppointmentsId] INT NOT NULL,
-    FOREIGN KEY ([PatientsId]) REFERENCES [Patients]([Id]),
-    FOREIGN KEY ([AppointmentsId]) REFERENCES [Appointments]([Id]),
-)
