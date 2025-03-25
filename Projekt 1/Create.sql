@@ -25,7 +25,7 @@ CREATE TABLE [Departments]
 CREATE TABLE [Patients]
 (
     [ID] INT IDENTITY (1, 1) NOT NULL PRIMARY KEY,
-    [Pesel] CHAR(11) NOT NULL,
+    [Pesel] CHAR(11) NOT NULL UNIQUE,
     [Imie] VARCHAR(50) NOT NULL,
     [Nazwisko] VARCHAR(50) NOT NULL,
     [Adres] VARCHAR(100) NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE [Doctors]
     [ID] INT IDENTITY (1, 1) NOT NULL PRIMARY KEY,
     [Imie] VARCHAR(50) NOT NULL,
     [Specjalizacja] VARCHAR(100) NOT NULL,
-    [NrLicencji] VARCHAR(50) NOT NULL,
+    [NrLicencji] VARCHAR(50) NOT NULL UNIQUE,
     [Telefon] VARCHAR(15) NOT NULL,
 
 );
@@ -159,6 +159,7 @@ go
 CREATE LOGIN Lekarz WITH PASSWORD = 'Lekarz1';
 go
 CREATE USER Lekarz FOR LOGIN Lekarz;
+go
 go
 ALTER ROLE lekarze ADD MEMBER Lekarz;
 go
