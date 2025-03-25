@@ -57,12 +57,12 @@ CREATE TABLE [Medications]
 CREATE TABLE [Prescriptions]
 (
     [ID] INT IDENTITY (1, 1) NOT NULL PRIMARY KEY,
-    [KodLeku] INT NOT NULL,
+    [KodLeku] INT,
     [Dawka] VARCHAR(50) NOT NULL,
     [Dawkowanie] VARCHAR(50) NOT NULL,
     [PatientsId] INT,
     FOREIGN KEY ([PatientsId]) REFERENCES [Patients]([ID]),
-    FOREIGN KEY ([KodLeku]) REFERENCES [Medications]([ID]),
+    FOREIGN KEY ([KodLeku]) REFERENCES [Medications]([ID]) on delete CASCADE,
 );
 
 CREATE TABLE [Appointments]
