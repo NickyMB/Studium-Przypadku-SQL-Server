@@ -67,3 +67,7 @@ LEFT JOIN Departments dep ON p.DepartmentsId = dep.ID
 LEFT JOIN Prescriptions pr ON pr.PatientsId = p.ID
 LEFT JOIN Medications m ON pr.KodLeku = m.ID
 LEFT JOIN LabTest lt ON lt.AppointmentsID = a.ID AND lt.AppointmentsData = a.Data;
+
+
+DELETE FROM Patients WHERE DepartmentsId IS NULL;
+SELECT top 1 ID FROM [dbo].[Departments] WHERE Nazwa = 'Cardiology';

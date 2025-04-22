@@ -4,7 +4,7 @@ Use HMS;
 go
 
 -- Partycje
-    --Appointments
+--Appointments
 
 CREATE PARTITION FUNCTION PF_Appointments_ByYear(DATETIME)
 AS RANGE RIGHT FOR VALUES ('2023-01-01', '2024-01-01', '2025-01-01', '2026-01-01', '2027-01-01');
@@ -104,7 +104,7 @@ CREATE TABLE [MedicalStaff]
 
 
 -- Index Klucza obcego
-    -- Tabela Appointemts
+-- Tabela Appointemts
 CREATE INDEX IX_Appointments_Doctors_Patients
 ON Appointments(DoctorsID, PatientsID);
 go
@@ -113,10 +113,12 @@ ON Appointments(DoctorsID);
 go
 CREATE INDEX IX_Appointments_Patients_FK
 ON Appointments(PatientsID);
- go   -- Tabela Patients
+ go
+-- Tabela Patients
 CREATE INDEX IX_Patients_Departments_FK
 ON Patients(DepartmentsID);
-  go  -- Tabela Prescriptions
+  go
+-- Tabela Prescriptions
 CREATE INDEX IX_Prescriptions_Patients_FK
 ON Prescriptions(PatientsID);
 go
@@ -125,15 +127,17 @@ ON Prescriptions(KodLeku);
 go
 CREATE INDEX IX_Prescriptions_Patients_Medications
 ON Prescriptions(PatientsID, KodLeku);
-go    -- Tabela LabTest
+go
+-- Tabela LabTest
 CREATE INDEX IX_LabTest_Appointments_FK
 ON LabTest(AppointmentsID);
-go    --Tabela MedicallStaff
+go
+--Tabela MedicallStaff
 CREATE INDEX IX_MedicalStaff_Departments_FK
 ON MedicalStaff(DepartmentsID);
 go
 --Użytownicy
-    --Administrator
+--Administrator
 CREATE LOGIN administrator WITH PASSWORD = 'admin1';
 go
 CREATE USER administrator FOR LOGIN administrator;
@@ -143,7 +147,7 @@ go
 GRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::dbo TO administrator;
 go
 
-    -- Lekarz
+-- Lekarz
 CREATE ROLE lekarze;
 go
 GRANT SELECT, INSERT, UPDATE ON dbo.Appointments TO lekarze;
@@ -152,7 +156,7 @@ GRANT SELECT ON dbo.Patients TO lekarze;
 go
 GRANT SELECT, INSERT, UPDATE ON dbo.Prescriptions TO lekarze;
 go
-GRANT SELECT ON dbo.LabTest TO leklekarzearz;
+GRANT SELECT ON dbo.LabTest TO lekarze;
 go
 GRANT SELECT ON dbo.Medications TO lekarze;
 go
@@ -163,7 +167,7 @@ go
 go
 ALTER ROLE lekarze ADD MEMBER Lekarz;
 go
-    --Pacjent
+--Pacjent
 CREATE ROLE Pacjenci
 go
 GRANT SELECT,INSERT ON dbo.Appointments TO Pacjenci;
@@ -183,7 +187,7 @@ go
 ALTER ROLE Pacjenci ADD MEMBER Pacjent;
 go
 
-    --Farmaceuta
+--Farmaceuta
 CREATE ROLE Farmaceuci
 go
 GRANT SELECT,INSERT,UPDATE,DELETE on dbo.Medications To Farmaceuci;
@@ -194,3 +198,12 @@ CREATE USER Farmaceuta FOR LOGIN Farmaceuta;
 go
 ALTER ROLE Farmaceuci ADD MEMBER Farmaceuta;
 
+CREATE FUNCTION GetDepartmentID(@Name VARCHAR(max))
+RETURNS INT
+AS
+BEGIN
+    DECLARE @DepartmentID INT;
+    SELECT @DepartmentID = ID FROM Departments WHERE Nazwa = @Name;
+    RETURN @DepartmentID;
+END;
+SELECT dbo.GetDepartmentID('Cardiology') as id
