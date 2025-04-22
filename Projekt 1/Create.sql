@@ -206,4 +206,4 @@ BEGIN
     SELECT @DepartmentID = ID FROM Departments WHERE Nazwa = @Name;
     RETURN @DepartmentID;
 END;
-SELECT dbo.GetDepartmentID('Cardiology') as id
+

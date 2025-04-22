@@ -1,9 +1,25 @@
 <link rel="stylesheet" href="CSS/Admin.css">
 <title>Admin</title>
 
-    <h1>Witaj administratorze!</h1>
-    <div class="container">
-        <div id="UsersContainer"></div>
+<h1>Witaj administratorze!</h1>
+
+<!-- Select Box Section -->
+<div class="select-container">
+    <label for="viewSelector">Wybierz widok:</label>
+    <select id="viewSelector" onchange="switchView()" style="width: 200px;">
+        <option value="patients">Pacjenci</option>
+        <option value="doctors">Lekarze</option>
+        <option value="departments">Oddziały</option>
+    </select>
+</div>
+
+
+<!-- Main Content Section -->
+<div class="container">
+    <!-- Patients View -->
+    <div id="patientsView">
+        <h2>Lista Pacjentów</h2>
+        
         <div id="EditContainer">
             <form method="POST" action="">
                 <input type="hidden" id="PatientID" name="PatientID">
@@ -27,7 +43,55 @@
                 <input type="reset" value="Resetuj">
             </form>
         </div>
-    </container>
+        <div id="UsersContainer"></div>
+    </div>
+
+    <!-- Doctors View -->
+    <div id="doctorsView" style="display: none;">
+        <h2>Lista Lekarzy</h2>
+        
+        <div id="EditContainer">
+            <form method="POST" action="">
+                <input type="hidden" id="DoctorID" name="DoctorID">
+                <input type="hidden" id="isEditingDoctor" name="isEditingDoctor" value="false">
+                <label for="DoctorName">Imię:</label><br>
+                <input type="text" id="DoctorName" name="DoctorName"><br>
+                <label for="DoctorSurname">Nazwisko:</label><br>
+                <input type="text" id="DoctorSurname" name="DoctorSurname"><br>
+                <label for="Specialization">Specjalizacja:</label><br>
+                <input type="text" id="Specialization" name="Specialization"><br>
+                <label for="DepartmentDoctor">Oddział:</label><br>
+                <select id="DepartmentDoctor" name="DepartmentDoctor"></select><br><br>
+                <button type="submit" name="action" value="saveDoctor">Zapisz</button>
+                <button type="submit" name="action" value="deleteDoctor" onclick="return confirmDeleteDoctor()">Usuń</button>
+                <input type="reset" value="Resetuj">
+            </form>
+        </div>
+        <div id="DoctorsContainer"></div>
+    </div>
+
+    <!-- Departments View -->
+    <div id="departmentsView" style="display: none;">
+        <h2>Lista Oddziałów</h2>
+        
+        <div id="EditContainer">
+            <form method="POST" action="">
+                <input type="hidden" id="DepartmentID" name="DepartmentID">
+                <input type="hidden" id="isEditingDepartment" name="isEditingDepartment" value="false">
+                <label for="DepartmentName">Nazwa Oddziału:</label><br>
+                <input type="text" id="DepartmentName" name="DepartmentName"><br>
+                <label for="DepartmentAdres">Adres:</label><br>
+                <input type="text" id="DepartmentAdres" name="DepartmentAdres"><br>
+                <label for="LiczbaLozek">Liczba Łóżek:</label><br>
+                <input type="text" id="LiczbaLozek" name="LiczbaLozek"><br><br>
+                <button type="submit" name="action" value="saveDepartment">Zapisz</button>
+                <button type="submit" name="action" value="deleteDepartment" onclick="return confirmDeleteDepartment()">Usuń</button>
+                <input type="reset" value="Resetuj">
+            </form>
+        </div>
+        <div id="DepartmentsContainer"></div>
+    </div>
+</div>
 
 <script>
     let selectedPatientId = null; // To store the ID of the selected patient
@@ -80,7 +144,46 @@
         }
         return confirm("Czy na pewno chcesz usunąć tego pacjenta?");
     }
+
+    function switchView() {
+        const view = document.getElementById("viewSelector").value;
+        document.getElementById("patientsView").style.display = view === "patients" ? "block" : "none";
+        document.getElementById("doctorsView").style.display = view === "doctors" ? "block" : "none";
+        document.getElementById("departmentsView").style.display = view === "departments" ? "block" : "none";
+    }
+
+    function confirmDeleteDoctor() {
+        const doctorId = document.getElementById("DoctorID").value;
+        if (!doctorId) {
+            alert("Nie wybrano lekarza do usunięcia.");
+            return false;
+        }
+        return confirm("Czy na pewno chcesz usunąć tego lekarza?");
+    }
+
+    function confirmDeleteDepartment() {
+        const departmentId = document.getElementById("DepartmentID").value;
+        if (!departmentId) {
+            alert("Nie wybrano oddziału do usunięcia.");
+            return false;
+        }
+        return confirm("Czy na pewno chcesz usunąć ten oddział?");
+    }
 </script>
+<style>
+.select-container select {
+    width: 200px; /* Fixed width for the select box */
+    margin-bottom: 20px;
+}
+
+.survey-container {
+    margin-bottom: 30px;
+}
+
+.container {
+    margin-top: 20px;
+}
+</style>
 <?php
 $serverName = "localhost\\MSSQLSERVER01"; // Serwer SQL Server, lokalnie
 $connectionOptions = array(
@@ -99,16 +202,16 @@ if (!$conn) {
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $action = $_POST["action"];
-    $patientId = $_POST["PatientID"];
-    $patientName = $_POST["PatientName"];
-    $patientSurname = $_POST["PatientSurname"];
-    $pesel = $_POST["Pesel"];
-    $address = $_POST["Adres"];
-    $mobile = $_POST["Mobile"];
-    $birthDate = $_POST["BirthDate"];
-    $department = $_POST["Department"];
 
     if ($action === "save") {
+        $patientId = $_POST["PatientID"];
+        $patientName = $_POST["PatientName"];
+        $patientSurname = $_POST["PatientSurname"];
+        $pesel = $_POST["Pesel"];
+        $address = $_POST["Adres"];
+        $mobile = $_POST["Mobile"];
+        $birthDate = $_POST["BirthDate"];
+        $department = $_POST["Department"];
         $isEditing = $_POST["isEditing"] === "true";
         if ($isEditing) {
             // Update existing patient
@@ -150,6 +253,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     } elseif ($action === "delete") {
         // Delete patient
+        $patientId = $_POST["PatientID"];
         if (!empty($patientId)) {
             $sql = "DELETE FROM [dbo].[Patients] WHERE ID = ?";
             $params = array($patientId);
@@ -161,6 +265,67 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
         } else {
             echo "<script>alert('Nie wybrano pacjenta do usunięcia.');</script>";
+        }
+    } elseif ($action === "saveDoctor") {
+        // Handle saving doctors
+        $doctorId = $_POST["DoctorID"];
+        $doctorName = $_POST["DoctorName"];
+        $doctorSurname = $_POST["DoctorSurname"];
+        $specialization = $_POST["Specialization"];
+        $departmentDoctor = $_POST["DepartmentDoctor"];
+
+        if ($_POST["isEditingDoctor"] === "true") {
+            $sql = "UPDATE [dbo].[Doctors] SET Imie = ?, Nazwisko = ?, Specjalizacja = ?, DepartmentsID = ? WHERE ID = ?";
+            $params = array($doctorName, $doctorSurname, $specialization, $departmentDoctor, $doctorId);
+        } else {
+            $sql = "INSERT INTO [dbo].[Doctors] (Imie, Nazwisko, Specjalizacja, DepartmentsID) VALUES (?, ?, ?, ?)";
+            $params = array($doctorName, $doctorSurname, $specialization, $departmentDoctor);
+        }
+        $stmt = sqlsrv_query($conn, $sql, $params);
+        if ($stmt === false) {
+            echo "<script>alert('Wystąpił błąd podczas zapisywania lekarza.');</script>";
+        } else {
+            echo "<script>alert('Dane lekarza zostały zapisane.');</script>";
+        }
+    } elseif ($action === "deleteDoctor") {
+        // Handle deleting doctors
+        $doctorId = $_POST["DoctorID"];
+        $sql = "DELETE FROM [dbo].[Doctors] WHERE ID = ?";
+        $params = array($doctorId);
+        $stmt = sqlsrv_query($conn, $sql, $params);
+        if ($stmt === false) {
+            echo "<script>alert('Wystąpił błąd podczas usuwania lekarza.');</script>";
+        } else {
+            echo "<script>alert('Lekarz został usunięty.');</script>";
+        }
+    } elseif ($action === "saveDepartment") {
+        // Handle saving departments
+        $departmentId = $_POST["DepartmentID"];
+        $departmentName = $_POST["DepartmentName"];
+
+        if ($_POST["isEditingDepartment"] === "true") {
+            $sql = "UPDATE [dbo].[Departments] SET Nazwa = ? WHERE ID = ?";
+            $params = array($departmentName, $departmentId);
+        } else {
+            $sql = "INSERT INTO [dbo].[Departments] (Nazwa) VALUES (?)";
+            $params = array($departmentName);
+        }
+        $stmt = sqlsrv_query($conn, $sql, $params);
+        if ($stmt === false) {
+            echo "<script>alert('Wystąpił błąd podczas zapisywania oddziału.');</script>";
+        } else {
+            echo "<script>alert('Dane oddziału zostały zapisane.');</script>";
+        }
+    } elseif ($action === "deleteDepartment") {
+        // Handle deleting departments
+        $departmentId = $_POST["DepartmentID"];
+        $sql = "DELETE FROM [dbo].[Departments] WHERE ID = ?";
+        $params = array($departmentId);
+        $stmt = sqlsrv_query($conn, $sql, $params);
+        if ($stmt === false) {
+            echo "<script>alert('Wystąpił błąd podczas usuwania oddziału.');</script>";
+        } else {
+            echo "<script>alert('Oddział został usunięty.');</script>";
         }
     }
 }
@@ -190,6 +355,10 @@ while ($row = sqlsrv_fetch_array($result_P, SQLSRV_FETCH_ASSOC)) {
 $qr = "SELECT Nazwa FROM [dbo].[Departments]" ;
 $result_D = sqlsrv_query($conn, $qr);
 
+// Zapytanie do tabeli Departments
+$qr = "SELECT * FROM [dbo].[Departments]" ;
+$result_Dep_All = sqlsrv_query($conn, $qr);
+
 // Sprawdzanie, czy zapytanie zostało wykonane poprawnie
 if ($result_D === false) {
     die(print_r(sqlsrv_errors(), true));
@@ -212,6 +381,7 @@ echo "<script>
         departmentSelect.appendChild(option);
     });
 </script>";
+
 
 // Zamknięcie połączenia
 sqlsrv_close($conn);
