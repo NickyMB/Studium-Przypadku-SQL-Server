@@ -179,6 +179,8 @@ go
 GRANT SELECT ON dbo.LabTest TO Pacjenci;
 go
 GRANT SELECT ON dbo.Medications TO Pacjenci;
+GO
+grant select on dbo.doctors to Pacjenci;
 go
 CREATE LOGIN Pacjent WITH PASSWORD = 'Pacjent1';
 go

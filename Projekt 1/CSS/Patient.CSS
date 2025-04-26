@@ -1,0 +1,10 @@
+table {
+  user-select: none; /* Wyłączenie zaznaczania tekstu */
+}
+table tr:nth-child(n + 2):hover {
+  background-color: #f2f2f2; /* Kolor tła podczas najechania */
+  cursor: pointer; /* Zmiana kursora na wskaźnik */
+}
+form select {
+  cursor: pointer; /* Zmiana kursora na wskaźnik */
+}

@@ -39,9 +39,9 @@ VALUES
 -- Insert data into Appointments
 INSERT INTO Appointments (Data, Diagnoza, DoctorsID, PatientsID)
 VALUES 
-('2025-03-01 10:00:00', 'High blood pressure', 1, 1),
-('2025-03-02 11:30:00', 'Migraine', 2, 2),
-('2025-03-03 14:00:00', 'Fractured arm', 3, 3);
+('2025-04-26 10:00:00', 'High blood pressure', 1, 1),
+('2025-04-26 11:30:00', 'Migraine', 2, 2),
+('2025-04-26 14:00:00', 'Fractured arm', 3, 3);
 
 -- Insert data into LabTest
 INSERT INTO LabTest (TypBadania, Wynik, Data, AppointmentsID, AppointmentsData)

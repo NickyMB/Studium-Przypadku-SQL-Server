@@ -1,9 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="Chemist.css">
+    <link rel="stylesheet" href="CSS/Chemist.css">
     <title>Medications</title>
     <script>
         let selectedMedicationId = null; // To store the ID of the selected medication
@@ -40,8 +35,7 @@
             document.getElementById("expiryDate").value = medication.TerminWaznosci;
         }
     </script>
-</head>
-<body>
+
     <h1>Witaj farmaceuto!</h1>
     <div class="container">
         <div id="medicationsContainer"></div>
@@ -148,5 +142,4 @@ if ($action == "update") {
     // Pass data to JavaScript
     echo "<script>const medicationsData = " . json_encode($medications) . "; displayMedications(medicationsData);</script>";
     ?>
-</body>
-</html>
+

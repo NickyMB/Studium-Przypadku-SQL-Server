@@ -55,13 +55,13 @@
                 <input type="hidden" id="DoctorID" name="DoctorID">
                 <input type="hidden" id="isEditingDoctor" name="isEditingDoctor" value="false">
                 <label for="DoctorName">Imię:</label><br>
-                <input type="text" id="DoctorName" name="DoctorName"><br>
-                <label for="DoctorSurname">Nazwisko:</label><br>
-                <input type="text" id="DoctorSurname" name="DoctorSurname"><br>
+                <input type="text" id="DoctorName" name="DoctorName" required><br>
                 <label for="Specialization">Specjalizacja:</label><br>
-                <input type="text" id="Specialization" name="Specialization"><br>
-                <label for="DepartmentDoctor">Oddział:</label><br>
-                <select id="DepartmentDoctor" name="DepartmentDoctor"></select><br><br>
+                <input type="text" id="Specialization" name="Specialization" required><br>
+                <label for="NrLicencji">Nr Licencji:</label><br>
+                <input type="text" id="NrLicencji" name="NrLicencji" required><br>
+                <label for="Telefon">Telefon:</label><br>
+                <input type="text" id="Telefon" name="Telefon" required><br>
                 <button type="submit" name="action" value="saveDoctor">Zapisz</button>
                 <button type="submit" name="action" value="deleteDoctor" onclick="return confirmDeleteDoctor()">Usuń</button>
                 <input type="reset" value="Resetuj">
@@ -83,7 +83,7 @@
                 <label for="DepartmentAdres">Adres:</label><br>
                 <input type="text" id="DepartmentAdres" name="DepartmentAdres"><br>
                 <label for="LiczbaLozek">Liczba Łóżek:</label><br>
-                <input type="text" id="LiczbaLozek" name="LiczbaLozek"><br><br>
+                <input type="text" id="LiczbaLozek" pattern="[0-9]*" name="LiczbaLozek"><br><br>
                 <button type="submit" name="action" value="saveDepartment">Zapisz</button>
                 <button type="submit" name="action" value="deleteDepartment" onclick="return confirmDeleteDepartment()">Usuń</button>
                 <input type="reset" value="Resetuj">
@@ -119,6 +119,49 @@
             userDiv.onclick = () => populateForm(user); // Add click event
             container.appendChild(userDiv);
             i++; // Increment counter
+        });
+    }
+    function displayDepartments(data) {
+        const container = document.getElementById("DepartmentsContainer");
+        container.innerHTML = ""; // Wyczyść poprzednią zawartość
+        console.log(data); // Debugowanie w konsoli
+
+        let i = 0; // Licznik
+        data.forEach((department) => {
+            const departmentDiv = document.createElement("div");
+            departmentDiv.id = `department${i}`; // Unikalne ID
+            departmentDiv.className = "department"; // Klasa do stylizacji
+            departmentDiv.innerHTML = `
+                <p><strong>ID:</strong> ${department.ID}</p>
+                <p><strong>Nazwa:</strong> ${department.Nazwa}</p>
+                <p><strong>Adres:</strong> ${department.Adres || "Brak danych"}</p>
+                <p><strong>Liczba łóżek:</strong> ${department.LiczbaLozek || "Brak danych"}</p>
+            `;
+            departmentDiv.onclick = () => populateDepartmentForm(department); // Obsługa kliknięcia
+            container.appendChild(departmentDiv);
+            i++; // Zwiększ licznik
+        });
+    }
+    function displayDoctors(data) {
+        const container = document.getElementById("DoctorsContainer");
+        container.innerHTML = ""; // Wyczyść poprzednią zawartość
+        console.log(data); // Debugowanie w konsoli
+
+        let i = 0; // Licznik
+        data.forEach((doctor) => {
+            const doctorDiv = document.createElement("div");
+            doctorDiv.id = `doctor${i}`; // Unikalne ID
+            doctorDiv.className = "doctor"; // Klasa do stylizacji
+            doctorDiv.innerHTML = `
+                <p><strong>ID:</strong> ${doctor.ID}</p>
+                <p><strong>Imię:</strong> ${doctor.Imie}</p>
+                <p><strong>Specjalizacja:</strong> ${doctor.Specjalizacja || "Brak danych"}</p>
+                <p><strong>Nr licencji:</strong> ${doctor.NrLicencji || "Brak danych"}</p>
+                <p><strong>Telefon:</strong> ${doctor.Telefon || "Brak danych"}</p>
+            `;
+            doctorDiv.onclick = () => populateDoctorForm(doctor); // Obsługa kliknięcia
+            container.appendChild(doctorDiv);
+            i++; // Zwiększ licznik
         });
     }
 
@@ -169,6 +212,23 @@
         }
         return confirm("Czy na pewno chcesz usunąć ten oddział?");
     }
+
+    function populateDepartmentForm(department) {
+        document.getElementById("DepartmentID").value = department.ID; // Ustaw ID oddziału
+        document.getElementById("isEditingDepartment").value = "true"; // Ustaw tryb edycji
+        document.getElementById("DepartmentName").value = department.Nazwa; // Ustaw nazwę oddziału
+        document.getElementById("DepartmentAdres").value = department.Adres || ""; // Ustaw adres
+        document.getElementById("LiczbaLozek").value = department.LiczbaLozek || ""; // Ustaw liczbę łóżek
+    } 
+   
+    function populateDoctorForm(doctor) {
+        document.getElementById("DoctorID").value = doctor.ID; // Ustaw ID lekarza
+        document.getElementById("isEditingDoctor").value = "true"; // Ustaw tryb edycji
+        document.getElementById("DoctorName").value = doctor.Imie; // Ustaw imię lekarza
+        document.getElementById("Specialization").value = doctor.Specjalizacja || ""; // Ustaw specjalizację
+        document.getElementById("NrLicencji").value = doctor.NrLicencji || ""; // Ustaw numer licencji
+        document.getElementById("Telefon").value = doctor.Telefon || ""; // Ustaw telefon
+    }
 </script>
 <style>
 .select-container select {
@@ -182,6 +242,14 @@
 
 .container {
     margin-top: 20px;
+}
+
+#UsersContainer ,#DoctorsContainer, #DepartmentsContainer {
+    max-height: 400px; /* Maksymalna wysokość kontenera */
+    overflow-y: auto; /* Włącz przewijanie w pionie */
+    border: 1px solid #ccc; /* Opcjonalna ramka dla lepszej widoczności */
+    padding: 10px; /* Opcjonalne odstępy wewnętrzne */
+    margin-top: 20px; /* Opcjonalny odstęp od góry */
 }
 </style>
 <?php
@@ -267,31 +335,39 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             echo "<script>alert('Nie wybrano pacjenta do usunięcia.');</script>";
         }
     } elseif ($action === "saveDoctor") {
-        // Handle saving doctors
+        // Pobierz dane z formularza
         $doctorId = $_POST["DoctorID"];
         $doctorName = $_POST["DoctorName"];
-        $doctorSurname = $_POST["DoctorSurname"];
         $specialization = $_POST["Specialization"];
-        $departmentDoctor = $_POST["DepartmentDoctor"];
+        $NrLicencji = $_POST["NrLicencji"];
+        $Telefon = $_POST["Telefon"];
 
         if ($_POST["isEditingDoctor"] === "true") {
-            $sql = "UPDATE [dbo].[Doctors] SET Imie = ?, Nazwisko = ?, Specjalizacja = ?, DepartmentsID = ? WHERE ID = ?";
-            $params = array($doctorName, $doctorSurname, $specialization, $departmentDoctor, $doctorId);
+            // Aktualizacja istniejącego lekarza
+            $sql = "UPDATE [dbo].[Doctors] SET Imie = ?, Specjalizacja = ?, Telefon = ?, NrLicencji = ? WHERE ID = ?";
+            $params = array($doctorName, $specialization, $Telefon, $NrLicencji, $doctorId);
         } else {
-            $sql = "INSERT INTO [dbo].[Doctors] (Imie, Nazwisko, Specjalizacja, DepartmentsID) VALUES (?, ?, ?, ?)";
-            $params = array($doctorName, $doctorSurname, $specialization, $departmentDoctor);
+            // Dodanie nowego lekarza
+            $sql = "INSERT INTO [dbo].[Doctors] (Imie, Specjalizacja, Telefon, NrLicencji) VALUES (?, ?, ?, ?)";
+            $params = array($doctorName, $specialization, $Telefon, $NrLicencji);
         }
+
+        // Debugowanie
+        error_log("SQL: " . $sql);
+        error_log("Params: " . print_r($params, true));
+
         $stmt = sqlsrv_query($conn, $sql, $params);
         if ($stmt === false) {
-            echo "<script>alert('Wystąpił błąd podczas zapisywania lekarza.');</script>";
+            die(print_r(sqlsrv_errors(), true)); // Wyświetl błędy SQL
         } else {
             echo "<script>alert('Dane lekarza zostały zapisane.');</script>";
         }
     } elseif ($action === "deleteDoctor") {
-        // Handle deleting doctors
+        // Pobierz ID lekarza z formularza
         $doctorId = $_POST["DoctorID"];
         $sql = "DELETE FROM [dbo].[Doctors] WHERE ID = ?";
         $params = array($doctorId);
+
         $stmt = sqlsrv_query($conn, $sql, $params);
         if ($stmt === false) {
             echo "<script>alert('Wystąpił błąd podczas usuwania lekarza.');</script>";
@@ -299,17 +375,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             echo "<script>alert('Lekarz został usunięty.');</script>";
         }
     } elseif ($action === "saveDepartment") {
-        // Handle saving departments
+        // Pobierz dane z formularza
         $departmentId = $_POST["DepartmentID"];
         $departmentName = $_POST["DepartmentName"];
+        $departmentAdres = $_POST["DepartmentAdres"];
+        $liczbaLozek = $_POST["LiczbaLozek"];
 
         if ($_POST["isEditingDepartment"] === "true") {
-            $sql = "UPDATE [dbo].[Departments] SET Nazwa = ? WHERE ID = ?";
-            $params = array($departmentName, $departmentId);
+            // Aktualizacja istniejącego oddziału
+            $sql = "UPDATE [dbo].[Departments] SET Nazwa = ?, Adres = ?, LiczbaLozek = ? WHERE ID = ?";
+            $params = array($departmentName, $departmentAdres, $liczbaLozek, $departmentId);
         } else {
-            $sql = "INSERT INTO [dbo].[Departments] (Nazwa) VALUES (?)";
-            $params = array($departmentName);
+            // Dodanie nowego oddziału
+            $sql = "INSERT INTO [dbo].[Departments] (Nazwa, Adres, LiczbaLozek) VALUES (?, ?, ?)";
+            $params = array($departmentName, $departmentAdres, $liczbaLozek);
         }
+
         $stmt = sqlsrv_query($conn, $sql, $params);
         if ($stmt === false) {
             echo "<script>alert('Wystąpił błąd podczas zapisywania oddziału.');</script>";
@@ -317,10 +398,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             echo "<script>alert('Dane oddziału zostały zapisane.');</script>";
         }
     } elseif ($action === "deleteDepartment") {
-        // Handle deleting departments
+        // Pobierz ID oddziału z formularza
         $departmentId = $_POST["DepartmentID"];
         $sql = "DELETE FROM [dbo].[Departments] WHERE ID = ?";
         $params = array($departmentId);
+
         $stmt = sqlsrv_query($conn, $sql, $params);
         if ($stmt === false) {
             echo "<script>alert('Wystąpił błąd podczas usuwania oddziału.');</script>";
@@ -355,9 +437,7 @@ while ($row = sqlsrv_fetch_array($result_P, SQLSRV_FETCH_ASSOC)) {
 $qr = "SELECT Nazwa FROM [dbo].[Departments]" ;
 $result_D = sqlsrv_query($conn, $qr);
 
-// Zapytanie do tabeli Departments
-$qr = "SELECT * FROM [dbo].[Departments]" ;
-$result_Dep_All = sqlsrv_query($conn, $qr);
+
 
 // Sprawdzanie, czy zapytanie zostało wykonane poprawnie
 if ($result_D === false) {
@@ -382,6 +462,25 @@ echo "<script>
     });
 </script>";
 
+// Oddziały
+// Zapytanie do tabeli Departments
+$qr = "SELECT * FROM [dbo].[Departments]" ;
+$result_Dep_All = sqlsrv_query($conn, $qr);
+// Pobieranie danych i kodowanie ich jako JSON
+$DepartmentsAll = array();
+while ($row = sqlsrv_fetch_array($result_Dep_All, SQLSRV_FETCH_ASSOC)) {
+    $DepartmentsAll[] = $row;}
+echo "<script>const DepartmentData = " . json_encode($DepartmentsAll) . "; console.log(DepartmentsData);displayDepartments(DepartmentData);</script>";
+
+//Lekarze
+
+$qr = "SELECT * FROM [dbo].[Doctors]" ;
+$result_Doctors = sqlsrv_query($conn, $qr);
+// Pobieranie danych i kodowanie ich jako JSON
+$Doctors = array();
+while ($row = sqlsrv_fetch_array($result_Doctors, SQLSRV_FETCH_ASSOC)) {
+    $Doctors[] = $row;}
+echo "<script>const DoctorsData = " . json_encode($Doctors) . "; console.log(DoctorsData);displayDoctors(DoctorsData);</script>";
 
 // Zamknięcie połączenia
 sqlsrv_close($conn);
