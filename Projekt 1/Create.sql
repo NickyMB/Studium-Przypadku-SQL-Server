@@ -69,7 +69,7 @@ CREATE TABLE [Appointments]
 (
     [ID] INT IDENTITY (1, 1) NOT NULL,
     [Data] DATETIME NOT NULL ,
-    [Diagnoza] VARCHAR(255) NOT NULL,
+    [Diagnoza] VARCHAR(255),
     [DoctorsID] INT,
     [PatientsID] INT,
     PRIMARY KEY ([ID], [Data]),
@@ -85,7 +85,6 @@ CREATE TABLE [LabTest]
     [Wynik] VARCHAR(50) NOT NULL,
     [Data] DATETIME NOT NULL,
     [AppointmentsID] INT,
-    [AppointmentsData] DATETIME,
     FOREIGN KEY ([AppointmentsID],[AppointmentsData] ) REFERENCES [Appointments]([ID], [Data]),
 
 );
@@ -208,4 +207,3 @@ BEGIN
     SELECT @DepartmentID = ID FROM Departments WHERE Nazwa = @Name;
     RETURN @DepartmentID;
 END;
-

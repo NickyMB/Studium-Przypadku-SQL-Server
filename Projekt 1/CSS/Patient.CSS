@@ -1,5 +1,13 @@
 table {
   user-select: none; /* Wyłączenie zaznaczania tekstu */
+  border-collapse: collapse; /* Usunięcie odstępów między komórkami */
+  border-style: solid; /* Styl obramowania */
+  margin: 5px;
+}
+table tr,
+table td,
+table th {
+  padding: 5px;
 }
 table tr:nth-child(n + 2):hover {
   background-color: #f2f2f2; /* Kolor tła podczas najechania */
@@ -7,4 +15,29 @@ table tr:nth-child(n + 2):hover {
 }
 form select {
   cursor: pointer; /* Zmiana kursora na wskaźnik */
+}
+#Container {
+  display: flex;
+  flex-direction: row;
+  max-height: 80%; /* Wysokość kontenera na 100% widoku */
+}
+#Container #ListaLekarzy,
+#Container #ListaWizyt,
+#Container #ListaBadan {
+  background-color: #fff; /* Kolor tła listy lekarzy */
+  margin: 10px;
+  border-radius: 8px; /* Zaokrąglenie rogów */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Cień dla listy lekarzy */
+  padding: 20px; /* Padding wewnętrzny */
+  overflow-y: auto;
+  overflow-x: auto;
+}
+#Container #ListaLekarzy {
+  flex: 1;
+}
+#Container #ListaWizyt {
+  flex: 1;
+}
+#Container #ListaBadan {
+  flex: 1;
 }

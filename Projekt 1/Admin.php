@@ -230,28 +230,7 @@
         document.getElementById("Telefon").value = doctor.Telefon || ""; // Ustaw telefon
     }
 </script>
-<style>
-.select-container select {
-    width: 200px; /* Fixed width for the select box */
-    margin-bottom: 20px;
-}
 
-.survey-container {
-    margin-bottom: 30px;
-}
-
-.container {
-    margin-top: 20px;
-}
-
-#UsersContainer ,#DoctorsContainer, #DepartmentsContainer {
-    max-height: 400px; /* Maksymalna wysokość kontenera */
-    overflow-y: auto; /* Włącz przewijanie w pionie */
-    border: 1px solid #ccc; /* Opcjonalna ramka dla lepszej widoczności */
-    padding: 10px; /* Opcjonalne odstępy wewnętrzne */
-    margin-top: 20px; /* Opcjonalny odstęp od góry */
-}
-</style>
 <?php
 $serverName = "localhost\\MSSQLSERVER01"; // Serwer SQL Server, lokalnie
 $connectionOptions = array(

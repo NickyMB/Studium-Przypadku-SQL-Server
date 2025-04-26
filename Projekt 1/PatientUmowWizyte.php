@@ -17,18 +17,22 @@ if (!$conn) {
 
 // Odczyt danych z żądania
 $data = json_decode(file_get_contents("php://input"), true);
-if (!$data || !isset($data['doctorId'], $data['data'], $data['godzina'])) {
+if (!$data || !isset($data['doctorId'], $data['data'], $data['godzina'], $data['pacjentId'])) {
     echo json_encode(["status" => "error", "message" => "Nieprawidłowe dane wejściowe."]);
     exit;
 }
 
 $doctorId = $data['doctorId'];
+$patientId = $data['pacjentId'];
 $dataWizyty = $data['data'];
+$GodzinaWizyty = $data['godzina'];
+$dateTimeWizyty = new DateTime("$dataWizyty $GodzinaWizyty");
 // $godzinaWizyty = $data['godzina'];
 
 // Wstawienie wizyty do bazy danych
-$sql = "INSERT INTO Appointments (DoctorsID, Data) VALUES (?, ?)";
-$params = array($doctorId, $dataWizyty);
+
+$sql = "INSERT INTO Appointments (Data, DoctorsID, PatientsID) VALUES (?, ?, ?)";
+$params = array($dateTimeWizyty, $doctorId, $patientId);
 $stmt = sqlsrv_query($conn, $sql, $params);
 
 if ($stmt === false) {
