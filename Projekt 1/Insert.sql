@@ -32,9 +32,9 @@ VALUES
 -- Insert data into Prescriptions
 INSERT INTO Prescriptions (KodLeku, Dawka, Dawkowanie, PatientsId)
 VALUES 
-(1, '500mg', 'Twice a day', 1),
-(2, '200mg', 'Once a day', 2),
-(3, '1000mg', 'Three times a day', 3);
+(4, '500mg', 'Twice a day', 1),
+(5, '200mg', 'Once a day', 2),
+(6, '1000mg', 'Three times a day', 3);
 
 -- Insert data into Appointments
 INSERT INTO Appointments (Data, Diagnoza, DoctorsID, PatientsID)

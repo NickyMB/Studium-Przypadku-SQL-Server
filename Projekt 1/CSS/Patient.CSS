@@ -23,6 +23,7 @@ form select {
 }
 #Container #ListaLekarzy,
 #Container #ListaWizyt,
+#Container #ListaRecept,
 #Container #ListaBadan {
   background-color: #fff; /* Kolor tła listy lekarzy */
   margin: 10px;
@@ -31,13 +32,5 @@ form select {
   padding: 20px; /* Padding wewnętrzny */
   overflow-y: auto;
   overflow-x: auto;
-}
-#Container #ListaLekarzy {
-  flex: 1;
-}
-#Container #ListaWizyt {
-  flex: 1;
-}
-#Container #ListaBadan {
   flex: 1;
 }

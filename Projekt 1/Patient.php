@@ -21,7 +21,7 @@ if (!$conn) {
 
 ?>
 <!-- Formularz -->
-<form id="Specjalizacje" method="POST" action="Patient.php">
+<form id="Specjalizacje" method="GET" action="Patient.php">
     <label for="Specjalizacja">Wybierz specjalizację:</label>
     <select name="Specjalizacja" id="Specjalizacja" onchange="LoadDoctors()">
         <option value="Basic">-- Wybierz specjalizację --</option> <!-- Domyślna opcja -->
@@ -33,8 +33,8 @@ if (!$conn) {
             die(print_r(sqlsrv_errors(), true));
         }
 
-        // Pobierz wybraną specjalizację z POST
-        $selectedSpecialization = isset($_POST['Specjalizacja']) ? $_POST['Specjalizacja'] : '';
+        // Pobierz wybraną specjalizację z GET
+        $selectedSpecialization = isset($_GET['Specjalizacja']) ? $_GET['Specjalizacja'] : '';
 
         while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
             $specjalizacja = htmlspecialchars($row['Specjalizacja']); // Zabezpieczenie przed XSS
@@ -221,6 +221,45 @@ if (!$conn) {
         };
         xhr.send(JSON.stringify(Dane)); // Send data as JSON
     }
+
+    function LoadPrescriptions() {
+        const url = "PatientListaRecept.php"; // URL to the PHP file handling the request
+        const ReceptyDiv = document.getElementById("ListaRecept"); // Div for displaying tests
+        ReceptyDiv.innerHTML = "<h2>Lista Recept</h2>"; // Clear previous content
+        const PatientId = document.getElementById("PacjenciLista").value; // Get appointment ID
+        const Dane = {
+            ID: PatientId 
+        };
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true); // Set POST method and URL
+        xhr.setRequestHeader('Content-Type', 'application/json'); // JSON header
+        xhr.onload = () => {
+            if (xhr.status === 200) {
+                try {
+                    const responseData = JSON.parse(xhr.responseText); // Parse JSON response
+                    // console.log(responseData); // Log response to console
+                     let tableContent = "<table border='1'>"; // Start table
+                    tableContent += "<tr><th>Nazwa Leku</th><th>Dawkowanie</th><th>Dawka</th></tr>"; // Table headers
+                    responseData.data.forEach((item) => {
+                        
+                        tableContent += "<tr><td>" + item.NazwaLeku + "</td><td>" + item.Dawkowanie + "</td><td>" + item.Dawka + "</td></tr>";
+                    });
+                    tableContent += "</table>"; // End table
+                    ReceptyDiv.innerHTML += tableContent; // Assign table content to div
+                } catch (e) {
+                    console.error("Błąd parsowania odpowiedzi JSON:", e);
+                }
+            } else {
+                console.error('Błąd żądania AJAX:', xhr.status, xhr.statusText);
+            }
+        };
+        xhr.onerror = () => {
+            console.error('Błąd sieci');
+        };
+        xhr.send(JSON.stringify(Dane)); // Send data as JSON
+        
+    }
 </script>
 
 <div id="Container">
@@ -229,11 +268,10 @@ if (!$conn) {
     <?php
     echo "<h2>Lista Lekarzy</h2>";
     // Sprawdź, czy specjalizacja została wybrana
-    if (isset($_POST['Specjalizacja']) && !empty($_POST['Specjalizacja'])) {
-        $Specka = $_POST['Specjalizacja']; // Pobranie wybranej specjalizacji z formularza
+    if (isset($_GET['Specjalizacja']) && !empty($_GET['Specjalizacja'])) {
+        $Specka = $_GET['Specjalizacja']; // Pobranie wybranej specjalizacji z formularza
         if ($Specka == "Basic") {
             echo "<p>Najpierw wybierz specjalizację.</p>";
-            // Ustawienie na pusty ciąg, jeśli wybrano domyślną opcję
         } else {
             // Zapytanie SQL z użyciem parametru
             $Times = array('08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00'); // Godziny przyjęć
@@ -309,6 +347,7 @@ if (!$conn) {
     }
     ?>
 </div>
+
 <div id="ListaWizyt">
     <!-- wyświetlanie aktualnej listy wizyt aktywnego pacjenta -->
     <?php
@@ -346,6 +385,12 @@ if (!$conn) {
 </div>
 <div id="ListaBadan">
 <h2>Wyniki Badań</h2>
+</div>
+<div id="ListaRecept">
+<h2>Lista Recept</h2>
+<script>
+    LoadPrescriptions(); // Wywołanie funkcji do ładowania recept
+</script>
 </div>
 </div>
 <?php
