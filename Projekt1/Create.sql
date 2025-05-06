@@ -153,16 +153,18 @@ GRANT SELECT, INSERT, UPDATE ON dbo.Appointments TO lekarze;
 go
 GRANT SELECT ON dbo.Patients TO lekarze;
 go
+GRANT SELECT ON dbo.Doctors TO lekarze;
+go
 GRANT SELECT, INSERT, UPDATE ON dbo.Prescriptions TO lekarze;
 go
-GRANT SELECT ON dbo.LabTest TO lekarze;
+GRANT SELECT,UPDATE,INSERT ON dbo.LabTest TO lekarze;
 go
 GRANT SELECT ON dbo.Medications TO lekarze;
 go
 CREATE LOGIN Lekarz WITH PASSWORD = 'Lekarz1';
 go
 CREATE USER Lekarz FOR LOGIN Lekarz;
-go
+
 go
 ALTER ROLE lekarze ADD MEMBER Lekarz;
 go
@@ -207,3 +209,4 @@ BEGIN
     SELECT @DepartmentID = ID FROM Departments WHERE Nazwa = @Name;
     RETURN @DepartmentID;
 END;
+

@@ -1,0 +1,73 @@
+table {
+  user-select: none; /* Wyłączenie zaznaczania tekstu */
+  border-collapse: collapse; /* Usunięcie odstępów między komórkami */
+  border-style: solid; /* Styl obramowania */
+  width: 100%; /* Szerokość tabeli na 90% */
+  table-layout: fixed; /* Stała szerokość kolumn */
+}
+table textarea {
+  width: 100%; /* Szerokość inputów na 100% komórki */
+  max-height: 100%; /* Wysokość inputów na 100% komórki */
+  min-height: 100px;
+  border: 1px solid #ccc; /* Obramowanie dla inputa */
+  background-color: #fff; /* Białe tło */
+  outline: none; /* Bez konturu po kliknięciu */
+  box-sizing: border-box; /* Upewnij się, że padding i border są wliczane w szerokość */
+  font-size: 14px; /* Rozmiar czcionki */
+  resize: none; /* Wyłączenie możliwości zmiany rozmiaru */
+  overflow: hidden; /* Ukrycie nadmiaru tekstu */
+  word-wrap: break-word; /* Zawijanie tekstu w inputach */
+  white-space: pre-wrap; /* Zawijanie tekstu w wielu liniach */
+  padding: 0;
+}
+table th,
+table td {
+  padding: 0;
+  text-align: left; /* Wyrównanie tekstu do lewej */
+  word-wrap: break-word; /* Zawijanie tekstu w komórkach */
+}
+table [type="submit"] {
+  width: 100%; /* Szerokość przycisku na 100% komórki */
+  height: 100%;
+}
+table input {
+  width: 95%;
+  height: 95%;
+  border: 1px solid #ccc; /* Obramowanie dla inputa */
+  padding: 2px;
+  margin: 2px;
+}
+
+table th {
+  font-weight: bold; /* Pogrubienie tekstu nagłówka */
+  text-align: center; /* Wyrównanie tekstu do środka */
+}
+
+table [id="Dane"]:hover {
+  background-color: #f2f2f2; /* Kolor tła podczas najechania */
+  cursor: pointer; /* Zmiana kursora na wskaźnik */
+}
+table [id="Dane"]:hover input {
+  background-color: #f2f2f2; /* Kolor tła podczas najechania */
+  cursor: pointer; /* Zmiana kursora na wskaźnik */
+}
+form select {
+  cursor: pointer; /* Zmiana kursora na wskaźnik */
+}
+#Container {
+  display: flex;
+  flex-direction: row;
+  max-height: 80%; /* Wysokość kontenera na 100% widoku */
+}
+#Container #Wizyty,
+#Container #Recepty,
+#Container #Badania {
+  background-color: #fff; /* Kolor tła listy lekarzy */
+  margin: 10px;
+  border-radius: 8px; /* Zaokrąglenie rogów */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Cień dla listy lekarzy */
+  padding: 20px; /* Padding wewnętrzny */
+  overflow-y: auto;
+  overflow-x: auto;
+  flex: 1;
+}

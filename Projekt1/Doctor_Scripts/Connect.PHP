@@ -13,6 +13,6 @@ $conn = sqlsrv_connect($serverName, $connectionOptions);
 if( !$conn ) {
     die( print_r(sqlsrv_errors(), true));
 } else {
-    echo "Witaj doktorze!";
+    // echo "Witaj doktorze!";
 }
 ?>
