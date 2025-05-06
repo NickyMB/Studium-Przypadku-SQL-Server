@@ -11,6 +11,12 @@
     <option value="">-- Brak Pacjentów --</option>
     <script src="Doctor_Scripts/SendDoctorIDToPatients.js"></script>
     </select>
+    <button id="toggleDaneDodatkowe" type="button" onclick="toggleDane()">Pokaż dodatkowe dane</button>
+    <script src="Doctor_Scripts/DodatkoweDane.js"></script>
+    <div id="DaneDodatkowe" style="display: none;">
+        <?php include "Doctor_Scripts/AdditionalData-Badania.php" ?>
+        <?php include "Doctor_Scripts/AdditionalData-ComonDoc.php" ?>
+    </div>
 </form>
     <br>
     <div id="Container">

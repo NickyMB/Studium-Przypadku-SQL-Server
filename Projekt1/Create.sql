@@ -155,6 +155,10 @@ GRANT SELECT ON dbo.Patients TO lekarze;
 go
 GRANT SELECT ON dbo.Doctors TO lekarze;
 go
+GRANT SELECT ON OBJECT::dbo.AverageTestPerPatient TO lekarze;
+go
+GRANT SELECT ON OBJECT::dbo.MostCommonDoc TO lekarze;
+go
 GRANT SELECT, INSERT, UPDATE ON dbo.Prescriptions TO lekarze;
 go
 GRANT SELECT,UPDATE,INSERT ON dbo.LabTest TO lekarze;
@@ -200,8 +204,8 @@ go
 CREATE USER Farmaceuta FOR LOGIN Farmaceuta;
 go
 ALTER ROLE Farmaceuci ADD MEMBER Farmaceuta;
-
-CREATE FUNCTION GetDepartmentID(@Name VARCHAR(max))
+go
+CREATE OR ALTER FUNCTION GetDepartmentID(@Name VARCHAR(max))
 RETURNS INT
 AS
 BEGIN
@@ -210,3 +214,43 @@ BEGIN
     RETURN @DepartmentID;
 END;
 
+GO
+CREATE OR ALTER FUNCTION AverageTestPerPatient()
+RETURNS TABLE
+AS
+RETURN
+(
+  SELECT AVG(AppointmentCount) AS AvgAppointments, CONCAT(SubQuery.Imie,' ',SubQuery.Nazwisko) AS Pacjent
+  FROM (
+    SELECT COUNT(*) AS AppointmentCount, PatientsID, Patients.Imie, Patients.Nazwisko
+    FROM Appointments 
+    JOIN Patients ON Appointments.PatientsID = Patients.ID
+    GROUP BY PatientsID, Patients.Imie, Patients.Nazwisko
+  ) AS SubQuery
+  GROUP BY SubQuery.Imie, SubQuery.Nazwisko
+);
+GO
+CREATE OR ALTER FUNCTION MostCommonDoc()
+RETURNS TABLE
+AS
+RETURN
+(
+select avg(AppointmentCount) as AvgAppointments, SubQuery.Imie
+from (
+    select count(*) as AppointmentCount, DoctorsID, Doctors.Imie
+    from Appointments JOIN Doctors ON Appointments.DoctorsID = Doctors.ID
+    group by DoctorsID,Doctors.Imie
+) as SubQuery 
+group by DoctorsID,SubQuery.Imie 
+);
+GO
+CREATE OR ALTER TRIGGER LessMedicine
+on Prescriptions
+FOR INSERT
+as
+BEGIN
+    SELECT KodLeku from inserted;
+    SELECT Dostepnosc FROM Medications where ID=(SELECT KodLeku from inserted);
+    UPDATE Medications SET Dostepnosc = Dostepnosc - 1 WHERE ID=(SELECT KodLeku from inserted);
+    SELECT Dostepnosc FROM Medications where ID=(SELECT KodLeku from inserted);
+end

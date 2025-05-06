@@ -29,3 +29,23 @@ select distinct M.Nazwa UNazwa, M.ID UId from Medications M
 INSERT INTO Prescriptions (KodLeku, Dawka, Dawkowanie, PatientsId) VALUES (4, '1mg', 'rocznie', 2)
 
 INSERT INTO LabTest (AppointmentsID, TypBadania, Wynik, Data) VALUES (2, 'Test Krwi', 'git', '2023-10-01')
+
+select avg(AppointmentCount) as AvgAppointments, PatientsID
+from (
+    select count(*) as AppointmentCount, PatientsID
+    from Appointments
+    group by PatientsID
+) as SubQuery
+group by PatientsID
+
+select * from AverageTestPerPatient()
+
+select avg(AppointmentCount) as AvgAppointments, DoctorsID
+from (
+    select count(*) as AppointmentCount, DoctorsID
+    from Appointments
+    group by DoctorsID
+) as SubQuery
+group by DoctorsID
+
+INSERT INTO Prescriptions (KodLeku, Dawka, Dawkowanie, PatientsId) VALUES (4, '1mg', 'rocznie', 2)
