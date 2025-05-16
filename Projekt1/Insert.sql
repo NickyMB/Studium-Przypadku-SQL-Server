@@ -1,3 +1,4 @@
+CREATE DATABASE HMS;
 USE HMS;
 GO
 
@@ -32,9 +33,9 @@ VALUES
 -- Insert data into Prescriptions
 INSERT INTO Prescriptions (KodLeku, Dawka, Dawkowanie, PatientsId)
 VALUES 
-(4, '500mg', 'Twice a day', 1),
-(5, '200mg', 'Once a day', 2),
-(6, '1000mg', 'Three times a day', 3);
+(1, '500mg', 'Twice a day', 1),
+(2, '200mg', 'Once a day', 2),
+(3, '1000mg', 'Three times a day', 3);
 
 -- Insert data into Appointments
 INSERT INTO Appointments (Data, Diagnoza, DoctorsID, PatientsID)
@@ -46,9 +47,9 @@ VALUES
 -- Insert data into LabTest
 INSERT INTO LabTest (TypBadania, Wynik, Data, AppointmentsID, AppointmentsData)
 VALUES 
-('Blood Test', 'Normal', '2025-03-01 12:00:00', 1, '2025-03-01 10:00:00'),
-('MRI', 'No abnormalities', '2025-03-02 13:00:00', 2, '2025-03-02 11:30:00'),
-('X-Ray', 'Fracture detected', '2025-03-03 15:00:00', 3, '2025-03-03 14:00:00');
+('Blood Test', 'Normal', '2025-04-26 12:00:00', 1, '2025-04-26 10:00:00'),
+('MRI', 'No abnormalities', '2025-04-26 13:00:00', 2, '2025-04-26 11:30:00'),
+('X-Ray', 'Fracture detected', '2025-04-26 15:00:00', 3, '2025-04-26 14:00:00');
 
 -- Insert data into MedicalStaff
 INSERT INTO MedicalStaff (Pielegniarki_Ilosc, Laboranci_Ilosc, TechnicyMedyczni_Ilosc, DepartmentsID)

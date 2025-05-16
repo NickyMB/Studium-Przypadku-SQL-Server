@@ -38,16 +38,10 @@
     function loadPage() {
       const selectedValue = document.getElementById("userRole").value;
       if (selectedValue) {
-        if (selectedValue == "Doctor") {
-          document.getElementById("contentFrame").src = selectedValue + ".html";
-          console.log("Doctor page loaded"); // Debugging line to check the selected value
-        }
-        else {
-          console.log("Doctor not page loaded"); // Debugging line to check the selected value
 
-          document.getElementById("contentFrame").src = selectedValue + ".php";
-        }
-      } else {
+        document.getElementById("contentFrame").src = selectedValue + ".php";
+      }
+      else {
         document.getElementById("contentFrame").src = ""; // Clear iframe if no selection
       }
     }

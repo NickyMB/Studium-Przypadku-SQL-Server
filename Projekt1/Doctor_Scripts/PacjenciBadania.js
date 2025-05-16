@@ -110,11 +110,8 @@ function submitNewTest() {
         return;
     }
 
-    // Konwersja daty na format YYYY-DD-MM HH:mm
-    // dataBadania np. "2025-11-31T11:30"
-    const [datePart, timePart] = dataBadania.split('T');
-    const [year, month, day] = datePart.split('-');
-    dataBadania = `${year}-${day}-${month} ${timePart}`;
+    // Poprawny format dla SQL Server: "YYYY-MM-DD HH:mm"
+    dataBadania = dataBadania.replace('T', ' ');
 
     const formData = new FormData();
     formData.append("WizytaID", window.currentVisitID);
@@ -133,7 +130,11 @@ function submitNewTest() {
                 closeTestModal();
                 ShowTests(window.currentVisitID);
             } else {
-                alert("Wystąpił błąd podczas dodawania badania.");
+                console.error("Szczegóły błędu:", data);
+                console.log("Wystąpił błąd podczas dodawania badania:\n" +
+                    (data.message || "") +
+                    (data.details ? "\n" + JSON.stringify(data.details) : "") +
+                    (data.debug ? "\nDebug: " + JSON.stringify(data.debug) : ""));
             }
         })
         .catch(error => {

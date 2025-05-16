@@ -1,0 +1,7 @@
+Array
+(
+    [WizytaID] => 1
+    [NazwaBadania] => MRI
+    [WynikBadania] => Abnormal
+    [DataBadania] => 2025-10-05 15:13
+)

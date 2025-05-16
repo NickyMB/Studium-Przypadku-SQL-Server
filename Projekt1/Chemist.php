@@ -1,5 +1,41 @@
-    <link rel="stylesheet" href="CSS/Chemist.css">
+<?php
+if (isset($_GET['download_xml'])) {
+    $serverName = "localhost\\MSSQLSERVER01";
+    $connectionOptions = array(
+        "Database" => "HMS",
+        "Uid" => "Farmaceuta",
+        "PWD" => "Farmaceuta1"
+    );
+    $conn = sqlsrv_connect($serverName, $connectionOptions);
+    $queryallMeds = "SELECT * FROM Medications";
+    $stmtallMeds = sqlsrv_query($conn, $queryallMeds);
+    $medicationsAllData = [];
+    while ($row = sqlsrv_fetch_array($stmtallMeds, SQLSRV_FETCH_ASSOC)) {
+        if (isset($row['TerminWaznosci']) && $row['TerminWaznosci'] instanceof DateTime) {
+            $row['TerminWaznosci'] = $row['TerminWaznosci']->format('Y-m-d');
+        }
+        $medicationsAllData[] = $row;
+    }
+    sqlsrv_close($conn);
+
+    $xml = new SimpleXMLElement('<Medications/>');
+    foreach ($medicationsAllData as $med) {
+        $medElem = $xml->addChild('Medication');
+        foreach ($med as $key => $value) {
+            $medElem->addChild($key, htmlspecialchars($value));
+        }
+    }
+    header('Content-Disposition: attachment; filename="medications.xml"');
+    header('Content-Type: application/xml');
+    echo $xml->asXML();
+    exit;
+}
+?>
+<link rel="stylesheet" href="CSS/Chemist.css">
     <title>Medications</title>
+    <form method="get" action="">
+    <button type="submit" name="download_xml" value="1">Pobierz leki jako XML</button>
+</form>
     <script>
         let selectedMedicationId = null; // To store the ID of the selected medication
 
@@ -59,6 +95,7 @@
     </div>
 
     <?php
+    // Połączenie z bazą
     $serverName = "localhost\\MSSQLSERVER01"; // SQL Server instance
     $connectionOptions = array(
         "Database" => "HMS", // Database name
@@ -73,6 +110,7 @@
     if (!$conn) {
         die(print_r(sqlsrv_errors(), true));
     }
+
 
     // Handle form submission to update the database
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -136,10 +174,69 @@ if ($action == "update") {
         $medications[] = $row;
     }
 
+
+$queryallMeds = "SELECT * FROM Medications M";
+$stmtallMeds = sqlsrv_query($conn, $queryallMeds);
+
+if ($stmtallMeds === false) {
+    echo json_encode(['status' => 'error', 'message' => 'Błąd podczas pobierania danych', 'details' => sqlsrv_errors()]);
+    exit;
+}
+
+$medicationsAllData = [];
+while ($row = sqlsrv_fetch_array($stmtallMeds, SQLSRV_FETCH_ASSOC)) {
+    // Jeśli TerminWaznosci jest obiektem DateTime, sformatuj go
+    if (isset($row['TerminWaznosci']) && $row['TerminWaznosci'] instanceof DateTime) {
+        $row['TerminWaznosci'] = $row['TerminWaznosci']->format('Y-m-d');
+    }
+    $medicationsAllData[] = $row;
+}
+
+
+echo "<script>console.log(" . json_encode($medicationsAllData) . ");</script>";
+
+
     // Close the connection
     sqlsrv_close($conn);
 
     // Pass data to JavaScript
     echo "<script>const medicationsData = " . json_encode($medications) . "; displayMedications(medicationsData);</script>";
     ?>
+
+<?php
+if (isset($_GET['download_xml'])) {
+    $medicationsAllData = [];
+    // Połącz z bazą i pobierz dane jak wcześniej
+    $serverName = "localhost\\MSSQLSERVER01";
+    $connectionOptions = array(
+        "Database" => "HMS",
+        "Uid" => "Farmaceuta",
+        "PWD" => "Farmaceuta1"
+    );
+    $conn = sqlsrv_connect($serverName, $connectionOptions);
+    $queryallMeds = "SELECT * FROM Medications";
+    $stmtallMeds = sqlsrv_query($conn, $queryallMeds);
+    while ($row = sqlsrv_fetch_array($stmtallMeds, SQLSRV_FETCH_ASSOC)) {
+        if (isset($row['TerminWaznosci']) && $row['TerminWaznosci'] instanceof DateTime) {
+            $row['TerminWaznosci'] = $row['TerminWaznosci']->format('Y-m-d');
+        }
+        $medicationsAllData[] = $row;
+    }
+    sqlsrv_close($conn);
+
+    // Konwersja do XML
+    $xml = new SimpleXMLElement('<Medications/>');
+    foreach ($medicationsAllData as $med) {
+        $medElem = $xml->addChild('Medication');
+        foreach ($med as $key => $value) {
+            $medElem->addChild($key, htmlspecialchars($value));
+        }
+    }
+    // Pobieranie pliku
+    header('Content-Disposition: attachment; filename="medications.xml"');
+    header('Content-Type: application/xml');
+    echo $xml->asXML();
+    exit;
+}
+?>
 

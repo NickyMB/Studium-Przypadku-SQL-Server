@@ -1,3 +1,70 @@
+<?php
+if (isset($_POST['download_excel'])) {
+    // Połączenie z bazą
+    $serverName = "localhost\\MSSQLSERVER01";
+    $connectionOptions = array(
+        "Database" => "HMS",
+        "Uid" => "administrator",
+        "PWD" => "admin1"
+    );
+    $conn = sqlsrv_connect($serverName, $connectionOptions);
+
+    // Pobierz dane pacjentów
+    $qr = "SELECT Patients.ID, Imie, Nazwisko, Patients.Adres, Telefon, DataUrodzenia, DepartmentsID, Nazwa, Pesel 
+           FROM [dbo].[Patients] 
+           LEFT JOIN [dbo].[Departments] ON Patients.DepartmentsID = Departments.ID";
+    $result = sqlsrv_query($conn, $qr);
+
+    // Nagłówki do Excela
+    header("Content-Type: application/vnd.ms-excel; charset=utf-8");
+    header("Content-Disposition: attachment; filename=pacjenci.xls");
+    echo "ID\tImie\tNazwisko\tAdres\tTelefon\tDataUrodzenia\tOddzialID\tOddzial\tPesel\n";
+    while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
+        $row['DataUrodzenia'] = isset($row['DataUrodzenia']) && $row['DataUrodzenia'] instanceof DateTime
+            ? $row['DataUrodzenia']->format('Y-m-d')
+            : $row['DataUrodzenia'];
+        echo $row['ID'] . "\t" . $row['Imie'] . "\t" . $row['Nazwisko'] . "\t" . $row['Adres'] . "\t" .
+             $row['Telefon'] . "\t" . $row['DataUrodzenia'] . "\t" . $row['DepartmentsID'] . "\t" .
+             $row['Nazwa'] . "\t" . $row['Pesel'] . "\n";
+    }
+    sqlsrv_close($conn);
+    exit;
+}
+?>
+<?php
+if (isset($_POST['download_xml'])) {
+    // Połączenie z bazą
+    $serverName = "localhost\\MSSQLSERVER01";
+    $connectionOptions = array(
+        "Database" => "HMS",
+        "Uid" => "administrator",
+        "PWD" => "admin1"
+    );
+    $conn = sqlsrv_connect($serverName, $connectionOptions);
+
+    $qr = "SELECT Patients.ID, Imie, Nazwisko, Patients.Adres, Telefon, DataUrodzenia, DepartmentsID, Nazwa, Pesel 
+           FROM [dbo].[Patients] 
+           LEFT JOIN [dbo].[Departments] ON Patients.DepartmentsID = Departments.ID";
+    $result = sqlsrv_query($conn, $qr);
+
+    $xml = new SimpleXMLElement('<Pacjenci/>');
+    while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
+        $row['DataUrodzenia'] = isset($row['DataUrodzenia']) && $row['DataUrodzenia'] instanceof DateTime
+            ? $row['DataUrodzenia']->format('Y-m-d')
+            : $row['DataUrodzenia'];
+        $pacjent = $xml->addChild('Pacjent');
+        foreach ($row as $key => $value) {
+            $pacjent->addChild($key, htmlspecialchars($value));
+        }
+    }
+    sqlsrv_close($conn);
+
+    header('Content-Disposition: attachment; filename=pacjenci.xml');
+    header('Content-Type: application/xml');
+    echo $xml->asXML();
+    exit;
+}
+?>
 <link rel="stylesheet" href="CSS/Admin.css">
 <title>Admin</title>
 
@@ -13,6 +80,12 @@
     </select>
 </div>
 
+<form method="post" action="Admin.php" style="margin-top:10px; display:inline;">
+    <button type="submit" name="download_excel" value="1">Pobierz pacjentów (Excel)</button>
+</form>
+<form method="post" action="Admin.php" style="margin-top:10px; display:inline;">
+    <button type="submit" name="download_xml" value="1">Pobierz pacjentów (XML)</button>
+</form>
 
 <!-- Main Content Section -->
 <div class="container">
@@ -463,4 +536,3 @@ echo "<script>const DoctorsData = " . json_encode($Doctors) . "; console.log(Doc
 
 // Zamknięcie połączenia
 sqlsrv_close($conn);
-?>

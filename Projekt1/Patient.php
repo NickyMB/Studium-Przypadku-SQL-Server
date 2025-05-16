@@ -1,6 +1,7 @@
 <title>Pacjent</title>
 <link rel="stylesheet" href="CSS/Patient.CSS">
 <?php
+// Połączenie z bazą
 $serverName = "localhost\MSSQLSERVER01"; // Serwer SQL Server, lokalnie
 $connectionOptions = array(
     "Database" => "HMS", // Nazwa bazy danych

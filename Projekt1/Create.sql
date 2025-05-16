@@ -33,7 +33,7 @@ CREATE TABLE [Patients]
     [DataUrodzenia] DATE NOT NULL,
 
     [DepartmentsId] INT,
-    FOREIGN KEY ([DepartmentsId]) REFERENCES [Departments]([ID]),
+    FOREIGN KEY ([DepartmentsId]) REFERENCES [Departments]([ID])on delete CASCADE,
 );
 
 CREATE TABLE [Doctors]
@@ -61,7 +61,7 @@ CREATE TABLE [Prescriptions]
     [Dawka] VARCHAR(50) NOT NULL,
     [Dawkowanie] VARCHAR(50) NOT NULL,
     [PatientsId] INT,
-    FOREIGN KEY ([PatientsId]) REFERENCES [Patients]([ID]),
+    FOREIGN KEY ([PatientsId]) REFERENCES [Patients]([ID])on delete CASCADE,
     FOREIGN KEY ([KodLeku]) REFERENCES [Medications]([ID]) on delete CASCADE,
 );
 
@@ -73,8 +73,8 @@ CREATE TABLE [Appointments]
     [DoctorsID] INT,
     [PatientsID] INT,
     PRIMARY KEY ([ID], [Data]),
-    FOREIGN KEY ([DoctorsID]) REFERENCES [Doctors]([ID]),
-    FOREIGN KEY ([PatientsID]) REFERENCES [Patients]([ID]),
+    FOREIGN KEY ([DoctorsID]) REFERENCES [Doctors]([ID])on delete CASCADE,
+    FOREIGN KEY ([PatientsID]) REFERENCES [Patients]([ID])on delete CASCADE,
 )
 ON PF_Appointments (Data);
 
@@ -85,7 +85,8 @@ CREATE TABLE [LabTest]
     [Wynik] VARCHAR(50) NOT NULL,
     [Data] DATETIME NOT NULL,
     [AppointmentsID] INT,
-    FOREIGN KEY ([AppointmentsID],[AppointmentsData] ) REFERENCES [Appointments]([ID], [Data]),
+    [AppointmentsData] DATETIME NOT NULL,
+    FOREIGN KEY ([AppointmentsID],[AppointmentsData] ) REFERENCES [Appointments]([ID], [Data])on delete CASCADE,
 
 );
 CREATE TABLE [MedicalStaff]
@@ -96,7 +97,7 @@ CREATE TABLE [MedicalStaff]
     [TechnicyMedyczni_Ilosc] INT,
 
     [DepartmentsID] INT,
-    FOREIGN KEY ([DepartmentsID]) REFERENCES [Departments]([ID]),
+    FOREIGN KEY ([DepartmentsID]) REFERENCES [Departments]([ID])on delete CASCADE,
 );
 
 -- Tabele Pośrednie
@@ -244,13 +245,22 @@ from (
 group by DoctorsID,SubQuery.Imie 
 );
 GO
+
+
+
 CREATE OR ALTER TRIGGER LessMedicine
-on Prescriptions
+ON Prescriptions
 FOR INSERT
-as
+AS
 BEGIN
-    SELECT KodLeku from inserted;
-    SELECT Dostepnosc FROM Medications where ID=(SELECT KodLeku from inserted);
-    UPDATE Medications SET Dostepnosc = Dostepnosc - 1 WHERE ID=(SELECT KodLeku from inserted);
-    SELECT Dostepnosc FROM Medications where ID=(SELECT KodLeku from inserted);
-end
+
+    UPDATE Medications
+    SET Dostepnosc = Dostepnosc - x.Liczba
+    FROM Medications m
+    INNER JOIN (
+        SELECT KodLeku, COUNT(*) AS Liczba
+        FROM inserted
+        WHERE KodLeku IS NOT NULL
+        GROUP BY KodLeku
+    ) x ON m.ID = x.KodLeku;
+END

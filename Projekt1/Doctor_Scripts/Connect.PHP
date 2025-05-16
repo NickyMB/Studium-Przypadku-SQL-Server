@@ -1,4 +1,5 @@
 <?php
+// Połączenie z bazą
 $serverName = "localhost\MSSQLSERVER01"; // Serwer SQL Server, lokalnie
 $connectionOptions = array(
     "Database" => "HMS", // Nazwa bazy danych
